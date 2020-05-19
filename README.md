@@ -1,2 +1,3 @@
 # tensorflow-flask-api
-Simple flask with tensorflow, image content detection
+
+api pourdetecter des objects dans une image
