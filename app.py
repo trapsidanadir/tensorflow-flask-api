@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template
 from werkzeug.utils import secure_filename
 import shutil
-#from utils import detect
+from utils import detect
 
 import os
 
@@ -13,7 +13,7 @@ def index():
     return render_template('index.html')
 
 @app.route("/detect",methods =['POST'])
-def images():
+def detection():
 
     if (request.method=='POST'):
 
@@ -23,10 +23,9 @@ def images():
         file_path = os.path.join('tmp',img.filename)
         img.save(file_path)
 
-        #prediction = detect(file_path)
+        prediction = detect(file_path)
 
-        return render_template('index.html', result='result',image = 'tmp/img.filename')
-        
+        return render_template('index.html', result=True, results=prediction)
 
 
 if __name__ == "__main__":

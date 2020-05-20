@@ -24,9 +24,26 @@
 			background-color: #f7c631 !important;
 		}
 
-		img {
+		.image-preview {
 			width: 500px;
 			height: 300px;
+			min-height: 300px;			
+			margin-top: 20px;
+			border: 2px solid #dddddd;
+
+			display: flex;
+			align-items: center;
+			text-align: center;
+			justify-content: center;
+			font-weight: bold;
+			object-fit: contain;
+			color: #cccccc;
+		}
+		.image-preview__image {
+			display: none;
+			width: 500px;
+			height: 300px;
+			min-height: 300px;
 			object-fit: contain;
 		}
 	</style>
@@ -36,44 +53,65 @@
 
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-12">
-				<div class="page-header" style="text-align: center;">
+				<div class="page-header col-md-12" style="text-align: center;">
 					<h1 style="margin: 3%;">
 						Image <span style="color: #f7c631;"> content </span> Detect <span
 							style="color: #f7c631;">!</span> on
 					</h1>
 				</div>
-				<div>
-					<div class="col-md-12" style="text-align: center;">
-						{% if image %}
-						<img src="{{ url_for('send_file', filename='tmp/image') }}">
-						{% endif %}
-					</div>
-					<div class="row" style="margin-top: 2%; margin-bottom: 2%;">
-						<div class="col-md-4">
-						</div style="text-align: left; display:flex">
-						<form action="http://localhost:5000/detect" method="POST" enctype="multipart/form-data" style=" text-align: center; display: flex;">
-							<input type="file" name="image"/>
-							<div class="col-md-4" style="text-align: center;">
-								{% if results %}
-								<h2 style="color: #f7c631;">
-									Results : {{results}}
-								</h2>
-								{% endif %}
-								<input type="submit" class="btn btn-lg btn-outline-primary" style="color=#f7c631; margin-top: 100%;">
-								</input>
+				<div style=" text-align: center;" class="col-md-12">
+					<div style="margin-top: 2%; margin-bottom: 2%;">
+						
+						<div style=" text-align: center;">
+							
+							{% if result %}
+							<h2 style="color: #f7c631; margin-bottom: 50px; text-align: center; text-align: center;">
+								Results :
+							</h2>
+							{% for i in results %}
+							<div style="text-align: center; justify-items: center; margin-top: 2px; text-size-adjust: 10px">
+								<font size="5" face="arial">
+									{{i[0]}} : {{i[1]}} %
+								</font>
 							</div>
-						</form>
-						<div class="col-md-4">
+							{% endfor %}
+							<a href="{{url_for('index')}}" class="btn btn-lg btn-outline-primary"
+								style="color = #f7c631; margin-top: 2%;"> New Test
+							</a>
+							{% else %}
+							<div class="row col-md-12" style="margin: auto;">
+								<div style="text-align: center; display: inline-block;" class="col-md-12">
+									
+									<form action="{{url_for('detection')}}" id='post' method="post" enctype="multipart/form-data" style="text-align: center; display: inline-block;">
+										<input type="file" name="image" id="file_input" accept=".jpg,.jpeg,.png">
+										<div class="image-preview col-md-12" id="preview" style="text-align: center;" >
+											<img src="" alt="Image Preview" class="image-preview__image" id=image>
+											<span class="image-preview__default-text">
+													Image Preview
+											</span>
+										</div>
+							
+										<div>
+											
+												<input type="submit" class="btn btn-lg btn-outline-primary"
+													style="color = #f7c631; margin-top: 10%;">
+												</input>
+											
+										</div>
+								
+									</form>
+								
+								</div>
+							</div>
+							{% endif %}
 						</div>
 					</div>
 				</div>
-			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<div class="page-header">
-					<h2 style="text-align: center; margin-bottom: 4%;">
+					<h2 style="text-align: center; margin-bottom: 4%; margin-top: 4%;">
 						<span>Features</span>! <small>Technology used for the project</small>
 					</h2>
 				</div>
@@ -118,7 +156,36 @@
 		</div>
 
 	</div>
+	<script>
+		const file_input = document.getElementById("file_input");
+		const preview = document.getElementById("preview");
+		const image = preview.querySelector('.image-preview__image');
+		const default_text = preview.querySelector('.image-preview__default-text');
 
+		file_input.addEventListener("change", function(){
+			const file = this.files[0];
+			console.log(file)
+
+			if (file){
+				const reader = new FileReader();
+
+				default_text.style.display = "none";
+				image.style.display = "block";
+				preview.style.border="none";
+
+				reader.addEventListener("load", function(){
+					image.setAttribute("src", this.result)
+				})
+
+				reader.readAsDataURL(file);
+			}else{
+				default_text.style.display = null;
+				preview.style.border=null;
+				image.style.display = null;
+				image.setAttribute("src","");
+			}
+		})
+	</script>
 	<script src="/static/js/jquery.min.js"></script>
 	<script src="/static/js/bootstrap.min.js"></script>
 	<script src="/static/js/scripts.js"></script>

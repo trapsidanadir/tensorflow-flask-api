@@ -5,8 +5,11 @@ from tensorflow.keras.applications.resnet50 import ResNet50
 from tensorflow.keras.applications.imagenet_utils import preprocess_input, decode_predictions
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
+from functools import lru_cache
 
 
+
+@lru_cache()
 def detect(file_name:str):
 
     model = ResNet50(weights='imagenet')
@@ -24,6 +27,6 @@ def detect(file_name:str):
     with graph.as_default():
         prediction = model.predict(preprocess)
     
-    recognition = decode_predictions(prediction,5)
+    recognition = [ (element[1],int(element[2]*100))  for element in decode_predictions(prediction,5)[0]]
 
     return recognition
