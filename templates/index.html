@@ -93,8 +93,8 @@
 							
 										<div>
 											
-												<input type="submit" class="btn btn-lg btn-outline-primary"
-													style="color = #f7c631; margin-top: 10%;">
+												<input type="hidden" class="btn btn-lg btn-outline-primary"
+													style="color = #f7c631; margin-top: 10%;" id='submit-form'>
 												</input>
 											
 										</div>
@@ -161,6 +161,7 @@
 		const preview = document.getElementById("preview");
 		const image = preview.querySelector('.image-preview__image');
 		const default_text = preview.querySelector('.image-preview__default-text');
+		const submit = document.getElementById('submit-form');
 
 		file_input.addEventListener("change", function(){
 			const file = this.files[0];
@@ -172,6 +173,7 @@
 				default_text.style.display = "none";
 				image.style.display = "block";
 				preview.style.border="none";
+				submit.setAttribute("type", "submit");
 
 				reader.addEventListener("load", function(){
 					image.setAttribute("src", this.result)
@@ -182,6 +184,7 @@
 				default_text.style.display = null;
 				preview.style.border=null;
 				image.style.display = null;
+				submit.setAttribute("type", "hidden");
 				image.setAttribute("src","");
 			}
 		})
